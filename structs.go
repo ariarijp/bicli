@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type bicliConfig struct {
+type BicliConfig struct {
 	Login  string `toml:"login"`
 	APIKey string `toml:"api-key"`
 }
@@ -39,7 +39,7 @@ type ShortURL struct {
 	LongURL string
 }
 
-func (s ShortURL) toCSV(sep string) string {
+func (s ShortURL) ToCSV(sep string) string {
 	return strings.Join([]string{
 		fmt.Sprintf("%d", s.LineNum),
 		s.URL,

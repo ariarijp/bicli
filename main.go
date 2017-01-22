@@ -65,16 +65,16 @@ func shorten(login string, apiKey string, longURL string) (string, error) {
 			return "", err
 		}
 
-		fmt.Println(bitlyErrResp.StatusText)
+		return bitlyErrResp.StatusText, nil
 	}
 
 	return string(bitlyResp.Data.URL), nil
 }
 
 func makeConfigFile(fileName string) error {
-	login := scan("Put your Bitly login: ")
+	login := scan("Put your Bitly login name: ")
 	apiKey := scan("Put your Bitly API Key: ")
-	conf := bicliConfig{
+	conf := BicliConfig{
 		Login:  login,
 		APIKey: apiKey,
 	}
@@ -91,8 +91,8 @@ func makeConfigFile(fileName string) error {
 	return nil
 }
 
-func readConfigFile(fileName string) (*bicliConfig, error) {
-	var conf bicliConfig
+func readConfigFile(fileName string) (*BicliConfig, error) {
+	var conf BicliConfig
 	_, err := toml.DecodeFile(fileName, &conf)
 	if err != nil {
 		return nil, err
@@ -145,14 +145,14 @@ func main() {
 		go func(i int, longURL string) {
 			defer wg.Done()
 
-			url, err := shorten(conf.Login, conf.APIKey, longURL)
+			_url, err := shorten(conf.Login, conf.APIKey, longURL)
 			if err != nil {
-				url = fmt.Sprintf("%v", err)
+				_url = fmt.Sprintf("%v", err)
 			}
 
 			shortURL := ShortURL{
 				LineNum: i + 1,
-				URL:     url,
+				URL:     _url,
 				LongURL: longURL,
 			}
 			shortURLs = append(shortURLs, shortURL)
@@ -164,6 +164,6 @@ func main() {
 
 	sort.Sort(ShortURLs(shortURLs))
 	for _, s := range shortURLs {
-		fmt.Println(s.toCSV(*sep))
+		fmt.Println(s.ToCSV(*sep))
 	}
 }
