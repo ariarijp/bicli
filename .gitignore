@@ -1,0 +1,4 @@
+*.csv
+*.toml
+!config.toml.example
+!urls.csv.example
