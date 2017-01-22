@@ -2,6 +2,12 @@
 
 Create short URLs with Bitly API.
 
+## Install
+
+```shell
+$ go get -u github.com/ariarijp/bicli
+```
+
 ## Usage
 
 ```shell
