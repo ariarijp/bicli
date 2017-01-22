@@ -112,8 +112,8 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	init := flag.Bool("init", false, "Create config file")
-	configFileName := flag.String("conf", "config.toml", "Config file")
-	urlsFileName := flag.String("urls", "urls.csv", "Long URL urls file")
+	configFileName := flag.String("conf", "config.toml", "Config file name")
+	urlsFileName := flag.String("urls", "urls.csv", "Long URL urls file name")
 	sep := flag.String("sep", ",", "Output separator")
 	sleepMsec := flag.Uint("sleep-msec", 1000, "Sleep time for each request")
 	flag.Parse()
@@ -123,7 +123,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("Config file created")
+		fmt.Println("Config file created.")
 
 		return
 	}

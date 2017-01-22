@@ -6,7 +6,7 @@ Create short URLs with Bitly API.
 
 ```shell
 $ bicli -h
-Usage of ./bicli:
+Usage of bicli:
   -conf string
     	Config file (default "config.toml")
   -init
