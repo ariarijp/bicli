@@ -38,14 +38,23 @@ func getURLsFromFile(fileName string) ([]string, error) {
 	return urls, nil
 }
 
-func shorten(login string, apiKey string, longURL string) (string, error) {
-	urlFormat := "http://api.bit.ly/v3/shorten?login=%s&apiKey=%s&format=json&longUrl=%s"
-	longURL = url.QueryEscape(longURL)
-	apiURL := fmt.Sprintf(urlFormat, login, apiKey, longURL)
+func shorten(login string, apiKey string, longURL string, domain string) (string, error) {
+	values := url.Values{}
+	values.Add("login", login)
+	values.Add("apiKey", apiKey)
+	values.Add("longUrl", longURL)
+	values.Add("format", "json")
+	values.Add("domain", domain)
+
+	req, err := http.NewRequest("GET", "http://api.bit.ly/v3/shorten", nil)
+	if err != nil {
+		return "", err
+	}
+	req.URL.RawQuery = values.Encode()
 
 	time.Sleep(time.Duration(rand.Intn(3)) * time.Second)
-
-	resp, err := http.Get(apiURL)
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -116,6 +125,7 @@ func main() {
 	urlsFileName := flag.String("urls", "urls.csv", "Long URL urls file name")
 	sep := flag.String("sep", ",", "Output separator")
 	sleepMsec := flag.Uint("sleep-msec", 1000, "Sleep time for each request")
+	domain := flag.String("domain", "bit.ly", "Custom short domain")
 	flag.Parse()
 
 	if *init {
@@ -145,7 +155,7 @@ func main() {
 		go func(i int, longURL string) {
 			defer wg.Done()
 
-			_url, err := shorten(conf.Login, conf.APIKey, longURL)
+			_url, err := shorten(conf.Login, conf.APIKey, longURL, *domain)
 			if err != nil {
 				_url = fmt.Sprintf("%v", err)
 			}
